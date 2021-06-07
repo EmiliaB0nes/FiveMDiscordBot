@@ -106,4 +106,5 @@ dist
 # Package Lock File
 package-lock.json
 
-
+# database
+history.sqlite

@@ -1,0 +1,18 @@
+{
+	"prefix": "!",
+	"token": "xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9JvempnDWxNDtmZ",
+    "channelId": "594936565819632525",
+    "postId": "262003493384459751",
+    "recurrence": "60000",
+    "server": "1.1.1.1:30100",
+    "serverName": "ServerName",
+    "thumbnail": "https://myserver.com/logo.png",
+    "chartLocation": "/home/fivemdiscordbot/public_html/fivem-graph",
+    "chartFileName": "chart.png",
+    "chartFolderURL": "https://mysite.com/fivem-graph",
+    "dataStorageTime": "2160",
+    "database": "history.sqlite",
+    "adMessageTitle": "Message Ad",
+    "adMessageText": "Message Ad Test",
+    "footerMessage": "Embed By Fivem Discord Bot"
+}

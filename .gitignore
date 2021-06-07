@@ -108,3 +108,6 @@ package-lock.json
 
 # database
 history.sqlite
+
+# config.json
+config.json

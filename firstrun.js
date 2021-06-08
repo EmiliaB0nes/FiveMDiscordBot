@@ -21,8 +21,8 @@ client.once('ready', () => {
 // Only for first run!
 
 client.on('message', message => {
-	if (message.content === config.prefix + 'veryLongBotAdd') {
-		// send back "Pong." to the channel the message was sent in
+	if (message.content === config.botAddCommand) {
+
 		message.channel.send('Hi!');
 	}
 });

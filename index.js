@@ -16,7 +16,7 @@ const client = new Discord.Client();
 //
 //
 // Create a cron job to start the script at boot (Require GNU Screen )
-//    @reboot /usr/bin/screen -dmS fivem_stats_discord_bot  /usr/bin/node /path/to/script/index.js
+//    @reboot /usr/bin/screen -dmS FiveMDiscordBot  /usr/bin/node /path/to/script/index.js
 //
 //
 
@@ -167,6 +167,7 @@ client.once('ready', () => {
                     serverStatus = "Hors Ligne";
                     playerName = '\u200B';
                     playerPing = '\u200B';
+                    playerCount = 0;
                     var playerLogs = "\n" + now + "\n";
                     colorStatus = '#FF0000';
                     playerLogs = playerLogs + "Server Offline";
@@ -224,9 +225,9 @@ function dataUpdate(jsonCount) {
     });
 
 
-    let sql2 = "DELETE FROM nbConnected WHERE date <= datetime('now', '-" + config.dataStorageTime + " minutes')";
+    sql = "DELETE FROM nbConnected WHERE date <= datetime('now', '-" + config.dataStorageTime + " minutes')";
 
-    db.run(sql2, function (err) {
+    db.run(sql, function (err) {
         if (err) {
             console.error(err.message);
         }
@@ -244,31 +245,29 @@ function imgGen() {
     db.all(sql, [], (err, rows) => {
 
         if (err) {
-            throw err;
+            console.error(err.message);
         }
 
 
 
         let countList = "";
 
-
+        //Prepare datas
         rows.forEach((row) => {
             countList += '{"x": "' + row.date + '", "y": ' + row.count + '},'
         });
 
-        //console.log(countList.slice(0, -2));
-
-        //console.log(typeof countList);
 
 
-        //console.table(rows);
 
+        //Chart generation
         const chart = new QuickChart();
 
         chart.setWidth(600);
         chart.setHeight(400);
         chart.setBackgroundColor('#2C2F33');
 
+        
         var chartConf = '{\
                 "type": "line",\
                 "data": {\

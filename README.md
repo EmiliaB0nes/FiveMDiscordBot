@@ -1,10 +1,37 @@
 # FiveMDiscordBot
 FiveM server stats bot for Discord
 
+
+
 ## Requirements
 - Node v12 or +
 - Web server (e.g., Apache, Nginx, Lighttpd, etc.)
 - *GNU Screen (Optional)*
+
+
+
+## Config File
+
+Command | Description | Sample
+------------ | ------------- | -------------
+**botAddCommand** | First launch command | !veryLongBotAdd
+**token** | Discord bot token | xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9JvempnDWxNDtmZ
+**channelId** | Desired channel ID | 594936565819632525
+**postId** | Desired Post ID (Not used during the first launch) | 262003493384459751
+**recurrence** | Recurrence in ms | 60000
+**server** | Server ip and port | 1.1.1.1:30100
+**serverName** | Server name for display | My Server
+**thumbnail** | Server Thumbnail URL | https://myserver.com/logo.png
+**chartLocation** | Desired Directory for the chart (On Web server) | /var/www/html/fivem-graph
+**chartFileName** | Desired chart file name | chart.png
+**chartFolderURL** | Public directory url for the chart | https://myserver.com/fivem-graph
+**dataStorageTime** | Data storage time in minutes | 1440
+**database** | Database Name | history.sqlite 
+**adMessageTitle** | Advertising Title | My Custom Ad Title
+**adMessageText** | Advertising message | Please vote for my server
+**footerMessage** | Footer Message | Embed By Fivem Discord Bot
+
+
 
 ## First Start
 
@@ -12,13 +39,9 @@ FiveM server stats bot for Discord
 https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token
 
 ### Install dependencies
-- Extract the release file
-- Go into the file
+- Extract the release folder
+- Go into the folder
 - Execute the command: `npm update`
-
-### Config File
-
-Upcoming documentation
 
 ### First Run
 
@@ -38,8 +61,17 @@ Upcoming documentation
 
 - After editing config.json to add the postId, execute: `node index.js`
 
+
+
 ## Automate the launch
+
+Exemple using Ubuntu 20.04.
 
 ### Using GNU Screen and Cron
 
-Upcoming documentation
+**Don't use root or similar user!**
+
+In this example, I will execute the script at server startup with a cron job.
+
+- Execute: `crontab -e`
+- At the bottom of the file, add: *@reboot /usr/bin/screen -dmS FiveMDiscordBot  /usr/bin/node /path/to/script/index.js*

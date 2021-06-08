@@ -252,15 +252,17 @@ function imgGen() {
 
         let countList = "";
 
-        //Prepare datas
+
+        // Prepare datas
         rows.forEach((row) => {
-            countList += '{"x": "' + row.date + '", "y": ' + row.count + '},'
+            //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
+            countList += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format( 'YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},'
         });
 
 
 
 
-        //Chart generation
+        // Chart generation
         const chart = new QuickChart();
 
         chart.setWidth(600);

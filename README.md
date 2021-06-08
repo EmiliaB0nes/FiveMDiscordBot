@@ -12,12 +12,13 @@ FiveM server stats bot for Discord
 
 ## Config File
 
-Command | Description  | Sample
+Command | Description  | Example
 ------------ | ------------ | ------------
 **botAddCommand** | First launch command | !veryLongBotAdd
 **token** | Discord bot token | xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9Jve
 **channelId** | Desired channel ID | 594936565819632525
 **postId** | Desired Post ID (Not used during the first launch) | 262003493384459751
+**dateCorrection** | Correct the time offset for the graph | 2
 **recurrence** | Recurrence in ms | 60000
 **server** | Server ip and port | 1.1.1.1:30100
 **serverName** | Server name for display | My Server
@@ -26,7 +27,7 @@ Command | Description  | Sample
 **chartFileName** | Desired chart file name | chart.png
 **chartFolderURL** | Public directory url for the chart | https://myserver.com/fivem-graph
 **dataStorageTime** | Data storage time in minutes | 1440
-**database** | Database Name | history.sqlite 
+**database** | Database Name | history.sqlite
 **adMessageTitle** | Advertising Title | My Custom Ad Title
 **adMessageText** | Advertising message | Please vote for my server
 **footerMessage** | Footer Message | Embed By FiveM Discord Bot
@@ -65,13 +66,16 @@ https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-
 
 ## Automate the launch
 
-Exemple using Ubuntu 20.04.
+Exemple using Ubuntu 20.04
 
 ### Using GNU Screen and Cron
 
 **Don't use root or similar user!**
 
-In this example, I will execute the script at server startup with a cron job.
+In this example, I will execute the script at server startup with a cron job:
 
 - Execute: `crontab -e`
 - At the bottom of the file, add: *@reboot /usr/bin/screen -dmS FiveMDiscordBot  /usr/bin/node /path/to/script/index.js*
+
+To see the logs, execute: `screen -r`
+To exit the logs, type ctrl + a + d

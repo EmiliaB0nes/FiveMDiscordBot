@@ -18,7 +18,7 @@ Command | Description  | Example
 **token** | Discord bot token | xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9Jve
 **channelId** | Desired channel ID | 594936565819632525
 **postId** | Desired Post ID (Not used during the first launch) | 262003493384459751
-**dateCorrection** | Correct the time offset for the graph | 2
+**dateCorrection** | Time offset for the graph | 2
 **recurrence** | Recurrence in ms | 60000
 **server** | Server ip and port | 1.1.1.1:30100
 **serverName** | Server name for display | My Server

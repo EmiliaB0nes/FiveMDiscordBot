@@ -214,6 +214,8 @@ function zerofill(number, length) {
 }
 
 
+
+// Update data and purge old datas
 function dataUpdate(jsonCount) {
 
     let sql = 'INSERT INTO "nbConnected" ("id","count") VALUES (NULL, ' + jsonCount + ')';
@@ -238,6 +240,8 @@ function dataUpdate(jsonCount) {
 }
 
 
+
+// Chart Generation
 function imgGen() {
 
     let sql = `SELECT * FROM nbConnected`;
@@ -256,7 +260,8 @@ function imgGen() {
         // Prepare datas
         rows.forEach((row) => {
             //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
-            countList += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format( 'YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},'
+            countList += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format( 'YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
+            //countList += '{"x": "' + row.date + '", "y": ' + row.count + '},';
         });
 
 

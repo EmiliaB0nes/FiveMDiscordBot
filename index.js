@@ -227,6 +227,8 @@ function dataUpdate(jsonCount) {
 
     let query2 = "DELETE FROM nbConnected WHERE date <= datetime('now', '-" + config.dataStorageTime + " minutes')";
 
+    let query3 = "SELECT * FROM nbConnected";
+
     let dataSelectJson = "";
     // db.run(query1, function (err) {
     //     if (err) {
@@ -257,7 +259,7 @@ function dataUpdate(jsonCount) {
                     console.error(err.message);
                 }
             })
-            .all(`SELECT * FROM nbConnected`, [], (err, rows) => {
+            .all(query3, [], (err, rows) => {
                 if (err) {
                     console.error(err.message);
                 }
@@ -301,6 +303,7 @@ function imgGen(datasJson) {
                             "fill": true,\
                             "borderWidth": 1,\
                             "pointRadius": 0,\
+                            "tension": 0.5,\
                             "data": [' + datasJson + '\
                         ]\
                     },\

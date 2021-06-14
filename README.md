@@ -42,7 +42,7 @@ https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-
 ### Install dependencies
 - Extract the release folder
 - Go into the folder
-- Execute the command: `npm update`
+- Execute the command: `npm install`
 
 ### First Run
 

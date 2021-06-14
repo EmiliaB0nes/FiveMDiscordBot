@@ -6,7 +6,7 @@ const moment = require('moment');
 const sqlite3 = require('sqlite3');
 const QuickChart = require('quickchart-js');
 
-const db = new sqlite3.Database(__dirname + '/' + config.database);
+//const db = new sqlite3.Database(__dirname + '/' + config.database);
 
 // create a new Discord client
 const client = new Discord.Client();
@@ -35,6 +35,7 @@ client.once('ready', () => {
     var playerPing;
     var playerCount;
     var colorStatus;
+
 
 
     function updateStats() {
@@ -138,6 +139,7 @@ client.once('ready', () => {
                     playerCount = 0;
                     var playerLogs = "\n" + now + "\n";
 
+
                     if (isDataAvailable != 0) {
                         for (var n in playerList) {
                             //console.log(playerList[n].name);
@@ -183,7 +185,7 @@ client.once('ready', () => {
 
 
             function embedEdit() {
-                imgGen();
+                //imgGen();
                 client.channels.cache.get(config.channelId).messages.fetch(config.postId).then(messageFeteched => messageFeteched.edit(fiveEmbed));
             }
 
@@ -218,75 +220,88 @@ function zerofill(number, length) {
 // Update data and purge old datas
 function dataUpdate(jsonCount) {
 
-    let sql = 'INSERT INTO "nbConnected" ("id","count") VALUES (NULL, ' + jsonCount + ')';
 
-    db.run(sql, function (err) {
-        if (err) {
-            console.error(err.message);
-        }
+    const db = new sqlite3.Database(__dirname + '/' + config.database);
+
+    let query1 = 'INSERT INTO "nbConnected" ("id","count") VALUES (NULL, ' + jsonCount + ')';
+
+    let query2 = "DELETE FROM nbConnected WHERE date <= datetime('now', '-" + config.dataStorageTime + " minutes')";
+
+    let dataSelectJson = "";
+    // db.run(query1, function (err) {
+    //     if (err) {
+    //         console.error(err.message);
+    //     }
+    // });
+
+
+
+
+    // db.run(query2, function (err) {
+    //     if (err) {
+    //         console.error(err.message);
+    //     }
+    // });
+
+
+
+
+    db.serialize(() => {
+        db.run(query1, function (err) {
+            if (err) {
+                console.error(err.message);
+            }
+        })
+            .run(query2, function (err) {
+                if (err) {
+                    console.error(err.message);
+                }
+            })
+            .all(`SELECT * FROM nbConnected`, [], (err, rows) => {
+                if (err) {
+                    console.error(err.message);
+                }
+
+                rows.forEach((row) => {
+                    //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
+                    dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
+                    //countList += '{"x": "' + row.date + '", "y": ' + row.count + '},';
+                });
+                imgGen(dataSelectJson);
+            });
+
     });
-
-
-    sql = "DELETE FROM nbConnected WHERE date <= datetime('now', '-" + config.dataStorageTime + " minutes')";
-
-    db.run(sql, function (err) {
-        if (err) {
-            console.error(err.message);
-        }
-    });
-
-    //db.close();
+    db.close();
 
 }
 
 
 
 // Chart Generation
-function imgGen() {
-
-    let sql = `SELECT * FROM nbConnected`;
-
-    db.all(sql, [], (err, rows) => {
-
-        if (err) {
-            console.error(err.message);
-        }
+function imgGen(datasJson) {
 
 
 
-        let countList = "";
+    // Chart generation
+    const chart = new QuickChart();
+
+    chart.setWidth(600);
+    chart.setHeight(400);
+    chart.setBackgroundColor('#2C2F33');
 
 
-        // Prepare datas
-        rows.forEach((row) => {
-            //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
-            countList += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format( 'YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
-            //countList += '{"x": "' + row.date + '", "y": ' + row.count + '},';
-        });
-
-
-
-
-        // Chart generation
-        const chart = new QuickChart();
-
-        chart.setWidth(600);
-        chart.setHeight(400);
-        chart.setBackgroundColor('#2C2F33');
-
-        
-        var chartConf = '{\
+    var chartConf = '{\
                 "type": "line",\
                 "data": {\
                     "datasets": [\
                         {\
                             "label": "Joueurs",\
-                            "backgroundColor": "rgba(255, 99, 132, 0.5)",\
+                            "backgroundColor": "rgba(255, 99, 132, 0.3)",\
                             "borderColor": "rgb(255, 99, 132)",\
                             "fill": true,\
                             "borderWidth": 1,\
                             "pointRadius": 0,\
-                            "data": [' + countList + '\
+                            "data": [' + datasJson + '\
                         ]\
                     },\
                 ]\
@@ -309,6 +324,9 @@ function imgGen() {
                             "major": {\
                                 "enabled": true\
                             }\
+                        },\
+                        gridLines: {\
+                            color: "rgba(119, 119, 119, 0.3)"\
                         }\
                     }],\
                     "yAxes": [{\
@@ -319,20 +337,20 @@ function imgGen() {
                         },\
                         ticks: {\
                             min: 0,\
+                        },\
+                        gridLines: {\
+                            color: "rgba(119, 119, 119, 0.3)"\
                         }\
                     }]\
                 }\
             }\
         }'
 
-        chart.chart = chartConf;
+    chart.chart = chartConf;
 
-        chart.toFile(config.chartLocation + '/' + config.chartFileName);
+    chart.toFile(config.chartLocation + '/' + config.chartFileName);
 
-    });
 
-    // close the database connection
-    //db.close();
 
 }
 

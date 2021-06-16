@@ -5,7 +5,7 @@ FiveM server stats bot for Discord
 
 ## Requirements
 - [Node v12.0 or higher](https://github.com/nodesource/distributions/blob/master/README.md)
-- Web server (e.g., Apache, Nginx, Lighttpd, etc.)
+- Web Server (e.g., Apache, Nginx, Lighttpd, etc.)
 - *GNU Screen (Optional)*
 
 
@@ -48,20 +48,11 @@ https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-
 
 - Add the bot to your server as described above
 
-- Before running the script, edit with your settings **config.sample.json** (except postId) and rename it as **config.json**
-
-#### firstrun.js
-
-- Execute: `node firstrun.js`
-- In the desired Discord chanel (It must be indicated in config.json), type: `!veryLongBotAdd`
-- Once the bot answers, close it with `ctrl + c`
-- Find the post id and add it in **config.json**
-
-
-#### index.js
-
-- After editing config.json to add the postId, execute: `node index.js`
-
+- Before running the script, edit with your settings **config.sample.json** (except postId and channelId) and copy it as **config.json**
+- Execute: `node index.js`
+- In the desired Discord channel, type: `!fivemdiscordbot`
+- Close the script with `ctrl + c`
+- Execute again: `node index.js`
 
 
 ## Automate the launch
@@ -86,7 +77,8 @@ In this example, I will execute the script at server startup with a cron job:
 ## Known Issues
 
 - The chart is suddenly not updated anymore
-    - The database is probably corrupted. To fix this problem, delete history.sqlite and copy/rename history.sqlite.template to history.sqlite 
+    - There is too much data, decrease the dataStorageTime setting
+    - If it doesn't work, The database is probably corrupted. To fix this problem, delete history.sqlite and copy/rename history.sqlite.template to history.sqlite 
 
 - On Ubuntu 20.04 LTS (and in some other distributions), the Node.js version is too old
     - You have to install [the official node.js repository](https://github.com/nodesource/distributions/blob/master/README.md) to have at least the v12.0

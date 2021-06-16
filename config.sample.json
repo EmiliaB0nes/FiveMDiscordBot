@@ -1,8 +1,8 @@
 {
-    "botAddCommand": "!veryLongBotAdd",
+    "botAddCommand": "!fivemdiscordbot",
     "token": "xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9JvempnDWxNDtmZ",
-    "channelId": "594936565819632525",
-    "postId": "262003493384459751",
+    "channelId": "",
+    "postId": "",
     "dateCorrection": "2",
     "recurrence": "60000",
     "server": "1.1.1.1:30100",

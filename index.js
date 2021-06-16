@@ -22,7 +22,7 @@ const client = new Discord.Client();
 //
 //
 
-jsonReader('./config.json', (err, settings) => {
+jsonReader(__dirname + '/config.json', (err, settings) => {
     if (err) {
         console.log('Error reading file:', err);
         return;
@@ -54,7 +54,7 @@ jsonReader('./config.json', (err, settings) => {
                         settings.postId = sent.id;
 
 
-                        fs.writeFile('./config.json', JSON.stringify(settings), (err) => {
+                        fs.writeFile(__dirname + '/config.json', JSON.stringify(settings), (err) => {
                             if (err) console.log('Error writing file:', err)
                         })
 

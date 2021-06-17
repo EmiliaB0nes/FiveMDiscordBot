@@ -28,6 +28,8 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
         return;
     }
 
+
+    // First run
     if (!settings.postId) {
 
         console.log('Ready!');
@@ -76,6 +78,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
         client.once('ready', () => {
 
             console.log('Ready!');
+            console.log('Please wait ' + (config.recurrence/1000) + ' seconds for the first update.');
 
 
 
@@ -295,7 +298,7 @@ function zerofill(number, length) {
 
 
 
-// Update data and purge old datas
+// Update data, purge old datas and create json datas
 function dataUpdate(jsonCount, callback) {
 
 
@@ -372,7 +375,7 @@ function imgGen(datasJson) {
     const chart = new QuickChart();
 
     chart.setWidth(600);
-    chart.setHeight(400);
+    chart.setHeight(500);
     chart.setBackgroundColor('#2C2F33');
 
 

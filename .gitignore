@@ -103,9 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# Package Lock File
-package-lock.json
-
 # database
 history.sqlite
 

@@ -16,8 +16,8 @@ Command | Description  | Example
 ------------ | ------------ | ------------
 **botAddCommand** | First launch command | !veryLongBotAdd
 **token** | Discord bot token | xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9Jve
-**channelId** | Desired channel ID | 594936565819632525
-**postId** | Desired Post ID (Not used during the first launch) | 262003493384459751
+**channelId** | Desired channel ID (Don't edit this field)  | 594936565819632525
+**postId** | Desired Post ID (Don't edit this field) | 262003493384459751
 **dateCorrection** | Time offset for the graph | 2
 **recurrence** | Recurrence in **ms** (1000 = 1 seconde) | 60000
 **server** | Server ip and port | 1.1.1.1:30100
@@ -38,6 +38,10 @@ Command | Description  | Example
 
 ### Get a Discord Bot Token
 https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token
+
+### Add the bot to your server 
+
+By editing this example link, you can add the bot to your server : https://discord.com/oauth2/authorize?scope=bot&permissions=2148001856&client_id=xxxxxxxxxxxxxxxxx
 
 ### Install dependencies
 - Extract the release folder

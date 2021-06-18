@@ -11,6 +11,7 @@
     "serverName": "My Server",
     "thumbnail": "https://myserver.com/logo.png",
     "chartLocation": "/var/www/html/fivem-graph",
+    "chartLocation_comment": "↑ The folder must exist ↑",
     "chartFileName": "chart.png",
     "chartFolderURL": "https://myserver.com/fivem-graph",
     "dataStorageTime": "1440",

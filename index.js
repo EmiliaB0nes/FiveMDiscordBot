@@ -1,4 +1,4 @@
-// require the discord.js module
+// require
 const Discord = require('discord.js');
 const config = require(__dirname + '/config.json');
 const axios = require('axios').default;
@@ -7,14 +7,14 @@ const sqlite3 = require('sqlite3');
 const QuickChart = require('quickchart-js');
 const fs = require('fs');
 
-//const db = new sqlite3.Database(__dirname + '/' + config.database);
 
 // create a new Discord client
 const client = new Discord.Client();
 
-//Add bot : https://discord.com/oauth2/authorize?scope=bot&permissions=2148001856&client_id=xxxxxxxxxxxxxxxxx
 
-
+//
+//
+// Add bot : https://discord.com/oauth2/authorize?scope=bot&permissions=2148001856&client_id=xxxxxxxxxxxxxxxxx
 //
 //
 // Create a cron job to start the script at boot (Require GNU Screen )
@@ -39,14 +39,14 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
         client.on('message', message => {
             if (message.content === config.botAddCommand) {
 
-                //console.log(settings);
+
 
                 if (settings.postId) {
                     console.log("Settings already set. Delete the content of channelId and postId on config.json if you want to make another post")
                 }
                 else {
                     message.channel.send('Hi!').then(sent => { // 'sent' is that message you just sent
-                        // let id = sent.id;
+
 
                         console.log("channel: " + sent.channel.id);
                         console.log("post: " + sent.id);
@@ -197,18 +197,17 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
 
                             if (isDataAvailable != 0) {
                                 for (var n in playerList) {
-                                    //console.log(playerList[n].name);
                                     playerName = playerName + zerofill(playerList[n].id, 3) + ": " + playerList[n].name.substring(0, 17) + '\n';
                                     playerPing = playerPing + playerList[n].ping + ' ms\n';
                                     playerCount++;
                                     playerLogs = playerLogs + playerList[n].name + " - " + playerList[n].ping + 'ms \n';
-                                    colorStatus = '#006400';
+                                    colorStatus = '#43B581';
                                 }
                             } else {
                                 playerName = '\u200B';
                                 playerPing = '\u200B';
                                 playerLogs = playerLogs + "No player Online";
-                                colorStatus = '#FFFF00';
+                                colorStatus = '#FAA61A';
                             }
 
 
@@ -230,7 +229,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                             playerPing = '\u200B';
                             playerCount = 0;
                             var playerLogs = "\n" + now + "\n";
-                            colorStatus = '#FF0000';
+                            colorStatus = '#F04747';
                             playerLogs = playerLogs + "Server Offline";
                             dataUpdate(playerCount, function (data) {
                                 imgGen(graphJson(data));
@@ -353,11 +352,10 @@ function graphJson(dataList) {
     let dataSelectJson = "";
     var oldRow = dataList[0];
 
-    //console.log(oldRow);
+
 
 
     dataList.forEach((row) => {
-        //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
 
         if (oldRow.count !== row.count) {
 
@@ -398,9 +396,8 @@ function imgGen(datasJson) {
                 "data": {\
                     "datasets": [\
                         {\
-                            "label": "Joueurs",\
-                            "backgroundColor": "rgba(255, 99, 132, 0.3)",\
-                            "borderColor": "rgb(255, 99, 132)",\
+                            "backgroundColor": getGradientFillHelper("vertical", ["#eb3639", "#FA285F", "#a336eb", "#54B2E3"]),\
+                            "borderColor": getGradientFillHelper("vertical", ["#eb3639", "#FA285F", "#a336eb", "#54B2E3"]),\
                             "fill": true,\
                             "borderWidth": 1,\
                             "pointRadius": 0,\
@@ -413,8 +410,12 @@ function imgGen(datasJson) {
             "options": {\
                 "responsive": true,\
                 "title": {\
+                    "display": true,\
+                    "text": "Nombre de joueurs",\
+                    "fontColor": "#fff"\
+                },\
+                "legend": {\
                     "display": false,\
-                    "text": "Nombre de joueurs"\
                 },\
                 "scales": {\
                     "xAxes": [{\
@@ -425,25 +426,27 @@ function imgGen(datasJson) {
                             "labelString": "Heure"\
                         },\
                         "ticks": {\
+                            "fontColor": "#fff",\
                             "major": {\
                                 "enabled": true\
                             }\
                         },\
-                        gridLines: {\
-                            color: "rgba(119, 119, 119, 0.3)"\
+                        "gridLines": {\
+                            "color": "#46413b"\
                         }\
                     }],\
                     "yAxes": [{\
                         "display": true,\
                         "scaleLabel": {\
-                            "display": true,\
+                            "display": false,\
                             "labelString": "Nombre"\
                         },\
-                        ticks: {\
-                            min: 0,\
+                        "ticks": {\
+                            "min": 0,\
+                            "fontColor": "#fff",\
                         },\
-                        gridLines: {\
-                            color: "rgba(119, 119, 119, 0.3)"\
+                        "gridLines": {\
+                            "color": "#46413b"\
                         }\
                     }]\
                 }\

@@ -78,7 +78,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
         client.once('ready', () => {
 
             console.log('Ready!');
-            console.log('Please wait ' + (config.recurrence/1000) + ' seconds for the first update.');
+            console.log('Please wait ' + (config.recurrence / 1000) + ' seconds for the first update.');
 
 
 
@@ -211,10 +211,9 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                 colorStatus = '#FFFF00';
                             }
 
-                            //console.log(dataUpdate(playerCount));
 
                             dataUpdate(playerCount, function (data) {
-                                imgGen(data);
+                                imgGen(graphJson(data));
                             });
 
                             console.log(playerLogs);
@@ -234,7 +233,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                             colorStatus = '#FF0000';
                             playerLogs = playerLogs + "Server Offline";
                             dataUpdate(playerCount, function (data) {
-                                imgGen(data);
+                                imgGen(graphJson(data));
                             });
                             editStats();
                             embedEdit();
@@ -310,7 +309,7 @@ function dataUpdate(jsonCount, callback) {
 
     let query3 = "SELECT * FROM nbConnected";
 
-    let dataSelectJson = "";
+    let query4 = "PRAGMA optimize";
 
 
     db.serialize(() => {
@@ -329,41 +328,56 @@ function dataUpdate(jsonCount, callback) {
                     console.error(err.message);
                 }
 
-                var oldRow = "";
-
-
-                rows.forEach((row) => {
-                    //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
-
-                    if (oldRow.count !== row.count) {
-
-                        dataSelectJson += '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
-                        dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
-
-                    }
-
-                    oldRow = row;
-
-                });
-
-
-                let lastItem = rows[rows.length - 1];
-
-                dataSelectJson += '{"x": "' + moment().add(3, 'seconds').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + lastItem.count + '},';
-
-                //console.table(rows);
-
-                callback(dataSelectJson);
+                callback(rows);
 
             });
 
     });
+
+    // Database Optimisation
+    db.run(query4, function (err) {
+        if (err) {
+            console.error(err.message);
+        }
+    })
+
     db.close();
 
 
 
 }
 
+//Data Generation for QuickChart
+function graphJson(dataList) {
+
+    let dataSelectJson = "";
+    var oldRow = dataList[0];
+
+    //console.log(oldRow);
+
+
+    dataList.forEach((row) => {
+        //console.log(moment(row.date).add(2, 'hours').format( 'YYYY-MM-DD HH:mm:ss' ));
+
+        if (oldRow.count !== row.count) {
+
+            dataSelectJson += '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
+            dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
+
+        }
+
+        oldRow = row;
+
+    });
+
+
+    let lastItem = dataList[dataList.length - 1];
+
+    dataSelectJson += '{"x": "' + moment().add(3, 'seconds').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + lastItem.count + '},';
+
+    return dataSelectJson;
+
+}
 
 
 // Chart Generation

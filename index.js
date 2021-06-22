@@ -35,7 +35,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
         console.log('Ready!');
         console.log('To set the bot up, type "' + config.botAddCommand + '" on the desired channel');
 
-        // Set channel and post id
+        // Set channel, post id and send a embed
         client.on('message', message => {
             if (message.content === config.botAddCommand) {
 
@@ -45,7 +45,14 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                     console.log("Settings already set. Delete the content of channelId and postId on config.json if you want to make another post")
                 }
                 else {
-                    message.channel.send('Hi!').then(sent => { // 'sent' is that message you just sent
+
+                    const firstEmbed = new Discord.MessageEmbed()
+                        .setColor('#0099ff')
+                        .setTitle('I have been successfully added')
+                        .addField('Please restart the bot', 'It is possible to stop the bot with ctrl+c on the terminal')
+
+
+                    message.channel.send(firstEmbed).then(sent => { // 'sent' is that message you just sent
 
 
                         console.log("channel: " + sent.channel.id);
@@ -349,19 +356,18 @@ function dataUpdate(jsonCount, callback) {
 //Data Generation for QuickChart
 function graphJson(dataList) {
 
-    let dataSelectJson = "";
-    var oldRow = dataList[0];
-
-
+    // let dataSelectJson = "";
+    let oldRow = dataList[0];
+    let dataSelectJson = '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
+    let dataSorted = [];
+    dataSorted.push(dataList[0]);
 
 
     dataList.forEach((row) => {
 
         if (oldRow.count !== row.count) {
-
-            dataSelectJson += '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
-            dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
-
+            dataSorted.push(oldRow);
+            dataSorted.push(row);
         }
 
         oldRow = row;
@@ -369,9 +375,25 @@ function graphJson(dataList) {
     });
 
 
+    // Limit data length
+    while(dataSorted.length > 1440){
+        dataSorted.shift();
+    }
+    //console.table(dataSorted);
+    
+
+    dataSorted.forEach((row) => {
+
+            dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
+
+    });
+
+
     let lastItem = dataList[dataList.length - 1];
 
     dataSelectJson += '{"x": "' + moment().add(3, 'seconds').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + lastItem.count + '},';
+
+    //console.log(dataSelectJson);
 
     return dataSelectJson;
 

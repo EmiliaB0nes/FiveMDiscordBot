@@ -1,6 +1,6 @@
 {
   "name": "fivem-discord-bot",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "FiveM server stats bot for Discord",
   "main": "index.js",
   "scripts": {

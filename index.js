@@ -134,7 +134,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                         // FiveEmbed
                         fiveEmbed = new Discord.MessageEmbed()
                             .setColor(colorStatus)
-                            .setTitle('Status du serveur')
+                            .setTitle('Server Status')
                             //.setURL('https://discord.js.org/')
                             //.setAuthor('Some name', 'https://i.imgur.com/wSTFkRM.png', 'https://discord.js.org')
                             //.setDescription('Some description here')
@@ -145,7 +145,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                     value: '\u200B'
                                 },
                                 {
-                                    name: 'Serveur',
+                                    name: 'Server',
                                     value: config.serverName
                                 },
                                 //{
@@ -153,7 +153,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                 //    value: '\u200B'
                                 //},
                                 {
-                                    name: 'Adresse (Whitelist)',
+                                    name: 'Adress',
                                     value: '`' + directConnect + '`'
                                 },
                                 //{
@@ -170,7 +170,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                 //    value: '\u200B'
                                 //},
                                 {
-                                    name: 'Joueurs en ligne',
+                                    name: 'Online Players',
                                     value: playerCount,
                                     inline: true
                                 },
@@ -179,7 +179,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                     value: '\u200B'
                                 },
                                 {
-                                    name: 'Joueurs',
+                                    name: 'Players',
                                     value: '```' + playerName + '```',
                                     inline: true
                                 },
@@ -218,7 +218,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                             var playerList = response.data;
 
                             directConnect = config.server;
-                            serverStatus = "En Ligne";
+                            serverStatus = "Online";
                             playerName = "";
                             playerPing = "";
                             playerCount = 0;
@@ -258,7 +258,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                             // handle error
                             console.log(error);
                             directConnect = '\u200B';
-                            serverStatus = "Hors Ligne";
+                            serverStatus = "Offline";
                             playerName = '\u200B';
                             playerPing = '\u200B';
                             playerCount = 0;

@@ -58,6 +58,26 @@ By editing this example link, you can add the bot to your server : https://disco
 - In the desired Discord channel, type: `!fivemdiscordbot`
 - Execute again: `node index.js`
 
+## Move bot / Update
+
+### Move bot messages
+
+If you want to move the bot on your server, you just have to delete in config.json: The channelId and postId data.
+
+Then, run `node index.js` again
+In the desired Discord channel, type: `!fivemdiscordbot`
+Execute again: `node index.js`
+
+### Update
+
+If it is indicated in the patch note that **config.sample.json** is updated. It is recommended to backup **config.json**, take the new **config.sample.json** and copy it as **config.json** and include the data of the old **config.json** (Except The channelId and postId data). The database will not be deleted.
+
+
+Then, run `node index.js` again
+In the desired Discord channel, type: `!fivemdiscordbot`
+Execute again: `node index.js`
+
+
 
 ## Automate the launch
 

@@ -12,19 +12,20 @@ FiveM server stats bot for Discord
 
 ## Config File
 
-Command | Description  | Example
+Name | Description  | Example
 ------------ | ------------ | ------------
 **botAddCommand** | First launch command | !veryLongBotAdd
 **token** | Discord bot token | xL89rF5RewAYyrWeChjQ.HpPg22e5ZtDscMyPxn.g4uJ9Jve
 **channelId** | Desired channel ID (Don't edit this field)  | 594936565819632525
-**postId** | Desired Post ID (Don't edit this field) | 262003493384459751
+**postId** (embed, postHistory) | Post ID (Don't edit this field) | 262003493384459751, 262003493384744995
 **dateCorrection** | Time offset for the graph | 2
+**hoursShown** (embed, postHistory) | Set how many **hours** shown  | 24, 168
 **recurrence** | Recurrence in **ms** (1000 = 1 seconde) | 60000
 **server** | Server ip and port | 1.1.1.1:30100
 **serverName** | Server name for display | My Server
 **thumbnail** | Server Thumbnail URL | https://myserver.com/logo.png
-**chartLocation** | Desired Directory for the chart (On Web server) | /var/www/html/fivem-graph
-**chartFileName** | Desired chart file name | chart.png
+**chartLocation** | Desired Directory for the chart (On Web server) | /var/www/html/fivem-charts
+**chartFileName** | Desired chart file name | chart
 **chartFolderURL** | Public directory url for the chart | https://myserver.com/fivem-graph
 **dataStorageTime** | Data storage time in **minutes** | 1440
 **database** | Database Name | history.sqlite
@@ -55,7 +56,6 @@ By editing this example link, you can add the bot to your server : https://disco
 - Before running the script, edit with your settings **config.sample.json** (except postId and channelId) and copy it as **config.json**
 - Execute: `node index.js`
 - In the desired Discord channel, type: `!fivemdiscordbot`
-- Close the script with `ctrl + c`
 - Execute again: `node index.js`
 
 

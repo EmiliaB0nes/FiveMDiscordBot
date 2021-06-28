@@ -108,4 +108,7 @@ history.sqlite
 
 # config.json
 config.json
+
+# Test Files
 firstrun.js
+test.js

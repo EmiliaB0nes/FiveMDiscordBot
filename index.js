@@ -7,6 +7,8 @@ const sqlite3 = require('sqlite3');
 const QuickChart = require('quickchart-js');
 const fs = require('fs');
 
+//Temporary Variable
+const historyCleaner = 5;
 
 // create a new Discord client
 const client = new Discord.Client();
@@ -30,7 +32,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
 
 
     // First run
-    if (!settings.postId) {
+    if (!settings.postId.embed) {
 
         console.log('Ready!');
         console.log('To set the bot up, type "' + config.botAddCommand + '" on the desired channel');
@@ -41,7 +43,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
 
 
 
-                if (settings.postId) {
+                if (settings.postId.embed) {
                     console.log("Settings already set. Delete the content of channelId and postId on config.json if you want to make another post")
                 }
                 else {
@@ -49,28 +51,49 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                     const firstEmbed = new Discord.MessageEmbed()
                         .setColor('#0099ff')
                         .setTitle('I have been successfully added')
-                        .addField('Please restart the bot', 'It is possible to stop the bot with ctrl+c on the terminal')
+                        .addField('Please start again the bot', '\u200B')
 
 
                     message.channel.send(firstEmbed).then(sent => { // 'sent' is that message you just sent
 
 
                         console.log("channel: " + sent.channel.id);
-                        console.log("post: " + sent.id);
+                        console.log("embed: " + sent.id);
 
 
                         settings.channelId = sent.channel.id;
-                        settings.postId = sent.id;
+                        settings.postId.embed = sent.id;
 
 
                         fs.writeFile(__dirname + '/config.json', JSON.stringify(settings), (err) => {
                             if (err) console.log('Error writing file:', err)
+                            else firstHistory();
                         })
 
-                        console.log("Post and channel id set! Please restart the script");
+                        function firstHistory() {
+
+                            message.channel.send("**Historique des 7 derniers jours (Beta)**");
+
+                            message.channel.send("History").then(sent => { // 'sent' is that message you just sent
 
 
+                                console.log("post: " + sent.id);
+
+                                settings.postId.postHistory = sent.id;
+
+
+                                fs.writeFile(__dirname + '/config.json', JSON.stringify(settings), (err) => {
+                                    if (err) console.log('Error writing file:', err)
+                                    else process.exit(1);
+                                })
+
+                                console.log("Post and channel id set!");
+
+                            });
+
+                        }
                     });
+
                 }
 
             }
@@ -107,7 +130,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
 
 
 
-                    function editStats() {
+                    function embedSettings() {
                         // FiveEmbed
                         fiveEmbed = new Discord.MessageEmbed()
                             .setColor(colorStatus)
@@ -178,7 +201,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                     value: '\u200B'
                                 },
                             )
-                            .setImage(config.chartFolderURL + '/' + config.chartFileName + '?ver=' + Math.floor((Math.random() * 999999) + 1))
+                            .setImage(config.chartFolderURL + '/' + config.chartFileName + '.png?ver=' + Math.floor((Math.random() * 999999) + 1))
                             .setTimestamp()
                             .setFooter(config.footerMessage);
 
@@ -219,12 +242,16 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
 
 
                             dataUpdate(playerCount, function (data) {
-                                imgGen(graphJson(data));
+                                imgGen(graphJson(data, config.hoursShown.embed), config.chartFileName + '.png');
+                                // imgGen(graphJson(data, config.hoursShown.postHistory), config.chartFileName + '2.png');
+                                imgGen(graphJson(dataCleaner(data, historyCleaner), config.hoursShown.postHistory), config.chartFileName + '2.png');
+                                //console.log(graphJson(data, config.hoursShown.postHistory));
                             });
 
                             console.log(playerLogs);
-                            editStats();
-                            embedEdit();
+                            embedSettings();
+                            postUpdate(settings.postId.embed, fiveEmbed);
+                            postUpdate(settings.postId.postHistory, config.chartFolderURL + '/' + config.chartFileName + '2.png?ver=' + Math.floor((Math.random() * 999999) + 1));
 
                         })
                         .catch(function (error) {
@@ -239,10 +266,14 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                             colorStatus = '#F04747';
                             playerLogs = playerLogs + "Server Offline";
                             dataUpdate(playerCount, function (data) {
-                                imgGen(graphJson(data));
+                                imgGen(graphJson(data, config.hoursShown.embed), config.chartFileName + '.png');
+                                // imgGen(graphJson(data, config.hoursShown.postHistory), config.chartFileName + '2.png');
+                                imgGen(graphJson(dataCleaner(data, historyCleaner), config.hoursShown.postHistory), config.chartFileName + '2.png');
+                                //console.log(graphJson(data, config.hoursShown.postHistory));
                             });
-                            editStats();
-                            embedEdit();
+                            embedSettings();
+                            postUpdate(settings.postId.embed, fiveEmbed);
+                            postUpdate(settings.postId.postHistory, config.chartFolderURL + '/' + config.chartFileName + '2.png?ver=' + Math.floor((Math.random() * 999999) + 1));
                             console.log(playerLogs);
 
                         });
@@ -251,8 +282,8 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                     // });
 
 
-                    function embedEdit() {
-                        client.channels.cache.get(config.channelId).messages.fetch(config.postId).then(messageFeteched => messageFeteched.edit(fiveEmbed));
+                    function postUpdate(postId, postMessage) {
+                        client.channels.cache.get(config.channelId).messages.fetch(postId).then(messageFeteched => messageFeteched.edit(postMessage));
                     }
 
                 }, config.recurrence)
@@ -333,7 +364,6 @@ function dataUpdate(jsonCount, callback) {
                 if (err) {
                     console.error(err.message);
                 }
-
                 callback(rows);
 
             });
@@ -354,37 +384,57 @@ function dataUpdate(jsonCount, callback) {
 }
 
 //Data Generation for QuickChart
-function graphJson(dataList) {
+function graphJson(dataList, chartLength) {
 
-    // let dataSelectJson = "";
-    let oldRow = dataList[0];
-    let dataSelectJson = '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
-    let dataSorted = [];
-    dataSorted.push(dataList[0]);
+    let chartDateLimit = moment().add(-chartLength, 'hours')
+    chartDateLimit = moment(chartDateLimit).add(-config.dateCorrection, 'hours')
+    let firstData = [];
 
 
     dataList.forEach((row) => {
 
-        if (oldRow.count !== row.count) {
-            dataSorted.push(oldRow);
-            dataSorted.push(row);
+        if (moment(row.date).unix() > moment(chartDateLimit).unix()) {
+            firstData.push(row);
         }
 
-        oldRow = row;
+    });
+
+    // console.table(firstData);
+
+    let oldRow = firstData[0];
+    let dataSelectJson = '{"x": "' + moment(oldRow.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + oldRow.count + '},';
+    let dataSorted = [];
+    dataSorted.push(firstData[0]);
+    firstData = [];
+
+
+    dataList.forEach((row) => {
+
+
+        if (moment(row.date).isAfter(chartDateLimit)) {
+
+            if (oldRow.count !== row.count) {
+                dataSorted.push(oldRow);
+                dataSorted.push(row);
+            }
+
+            oldRow = row;
+
+        }
 
     });
 
 
     // Limit data length
-    while(dataSorted.length > 1440){
+    while (dataSorted.length > 1440) {
         dataSorted.shift();
     }
     //console.table(dataSorted);
-    
+
 
     dataSorted.forEach((row) => {
 
-            dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
+        dataSelectJson += '{"x": "' + moment(row.date).add(config.dateCorrection, 'hours').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + row.count + '},';
 
     });
 
@@ -394,14 +444,44 @@ function graphJson(dataList) {
     dataSelectJson += '{"x": "' + moment().add(3, 'seconds').format('YYYY-MM-DD HH:mm:ss') + '", "y": ' + lastItem.count + '},';
 
     //console.log(dataSelectJson);
+    console.log(dataSorted.length);
 
     return dataSelectJson;
 
 }
 
+// Delete a part of the data
+function dataCleaner(data, count) {
+
+    let c = 0;
+    let dataCleaned = [];
+
+    data.forEach((row) => {
+
+        if (c === count) {
+            dataCleaned.push(row);
+            c = 0;
+        }
+        else {
+            c++;
+        }
+
+    });
+
+    if (data.length % count !== 0) {
+
+        dataCleaned.push(data[data.length - 1]);
+
+    }
+
+    //console.table(dataCleaned);
+
+    return dataCleaned;
+}
+
 
 // Chart Generation
-function imgGen(datasJson) {
+function imgGen(datasJson, chartFileName) {
 
 
 
@@ -477,7 +557,7 @@ function imgGen(datasJson) {
 
     chart.chart = chartConf;
 
-    chart.toFile(config.chartLocation + '/' + config.chartFileName);
+    chart.toFile(config.chartLocation + '/' + chartFileName);
 
 
 

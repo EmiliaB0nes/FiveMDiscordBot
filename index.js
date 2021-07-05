@@ -65,7 +65,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                         settings.postId.embed = sent.id;
 
 
-                        fs.writeFile(__dirname + '/config.json', JSON.stringify(settings), (err) => {
+                        fs.writeFile(__dirname + '/config.json', JSON.stringify(settings, null, 4), (err) => {
                             if (err) console.log('Error writing file:', err)
                             else firstHistory();
                         })
@@ -82,7 +82,7 @@ jsonReader(__dirname + '/config.json', (err, settings) => {
                                 settings.postId.postHistory = sent.id;
 
 
-                                fs.writeFile(__dirname + '/config.json', JSON.stringify(settings), (err) => {
+                                fs.writeFile(__dirname + '/config.json', JSON.stringify(settings, null, 4), (err) => {
                                     if (err) console.log('Error writing file:', err)
                                     else process.exit(1);
                                 })
